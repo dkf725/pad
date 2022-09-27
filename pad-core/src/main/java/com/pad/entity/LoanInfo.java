@@ -7,6 +7,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -62,10 +64,12 @@ public class LoanInfo implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(locale = "zh",timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date createTime;
 
     @ApiModelProperty(value = "更新时间")
     @TableField(fill = FieldFill.INSERT_UPDATE)
+    @JsonFormat(locale = "zh",timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date updateTime;
 
     @ApiModelProperty(value = "逻辑删除 0已删除，1未删除")
@@ -78,5 +82,13 @@ public class LoanInfo implements Serializable {
     @TableField(exist = false)
     @ApiModelProperty(value = "银行名称")
     private String bankName;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "积分数值")
+    private Integer value;
+
+    @TableField(exist = false)
+    @ApiModelProperty(value = "企业电话")
+    private String phone;
 
 }

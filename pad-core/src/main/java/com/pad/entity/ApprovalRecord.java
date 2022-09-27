@@ -7,6 +7,8 @@ import java.util.Date;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -36,8 +38,8 @@ public class ApprovalRecord implements Serializable {
     @ApiModelProperty(value = "贷款信息编号")
     private String lId;
 
-    @ApiModelProperty(value = "审核人物（银行或平台）")
-    private String character;
+    @ApiModelProperty(value = "审核人物（1银行,0平台）")
+    private Integer type;
 
     @ApiModelProperty(value = "审批状态 0未审核，1审核通过，-1审核失败")
     private Integer status;
@@ -47,6 +49,7 @@ public class ApprovalRecord implements Serializable {
 
     @ApiModelProperty(value = "创建时间")
     @TableField(fill = FieldFill.INSERT)
+    @JsonFormat(locale = "zh",timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date createTime;
 
 

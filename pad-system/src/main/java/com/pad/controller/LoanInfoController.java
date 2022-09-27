@@ -4,9 +4,11 @@ package com.pad.controller;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.pad.entity.ApprovalRecord;
 import com.pad.entity.CompanyInfo;
 import com.pad.entity.LoanInfo;
 import com.pad.response.R;
+import com.pad.service.ApprovalRecordService;
 import com.pad.service.LoanInfoService;
 import com.pad.entity.LoanInfo;
 import com.pad.utils.MD5;
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
@@ -34,6 +37,9 @@ public class LoanInfoController {
 
     @Autowired
     private LoanInfoService loanInfoService;
+
+    @Autowired
+    private ApprovalRecordService approvalRecordService;
 
     @PreAuthorize("@me.hasAuthority('company:loanInfo:list')")
     @ApiOperation("贷款信息表分页显示")
@@ -74,6 +80,35 @@ public class LoanInfoController {
     @GetMapping("/findBy/{id}")
     public R findBy(@PathVariable("id") String id){
         return R.ok().data("id",loanInfoService.findById(id));
+    }
+
+    @PreAuthorize("@me.hasAuthority('company:loanInfo:modify')")
+    @ApiOperation("审核贷款")
+    @GetMapping("/changeStatus")
+    public R changeStatus(
+            @ApiParam(name = "id",value = "贷款编号",required = true)
+            String id,
+            @ApiParam(name = "status",value = "审核状态",required = true)
+            Integer status,
+            @ApiParam(name = "message",value = "审核说明",required = true)
+            String message,
+            @ApiParam(name = "character",value = "审核人",required = true)
+            Integer type){
+        LoanInfo loanInfo = new LoanInfo();
+        loanInfo.setId(id);
+        loanInfo.setStatus(status);
+        loanInfoService.updateById(loanInfo);
+
+        //添加审批记录
+        ApprovalRecord approvalRecord = new ApprovalRecord();
+        approvalRecord.setLId(id);
+        approvalRecord.setStatus(status);
+        approvalRecord.setType(type);
+        if (StringUtils.hasText(message)){
+            approvalRecord.setMessage(message);
+        }
+        approvalRecordService.save(approvalRecord);
+        return R.ok().message("修改成功");
     }
 
     @PreAuthorize("@me.hasAuthority('company:loanInfo:edit')")

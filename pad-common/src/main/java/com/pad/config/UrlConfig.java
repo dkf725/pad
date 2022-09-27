@@ -10,7 +10,8 @@ public class UrlConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry
         .addResourceHandler("/img/**")
-        .addResourceLocations("file:D:/shixun/pad-front/target/classes/static/images/");
-        //"file:D:/shixun/pad-front/target/classes/static/images/"
+        .addResourceLocations("file:D:/QQPCmgr/Desktop/12shixun/pad-front/target/classes/static/images/");
+
+        /*file:D:/QQPCmgr/Desktop/12shixun/pad-front/target/classes/static/images/*/
     }
 }

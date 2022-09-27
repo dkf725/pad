@@ -2,9 +2,11 @@ package com.pad.controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.pad.entity.ApprovalRecord;
 import com.pad.entity.CompanyInfo;
 import com.pad.entity.CompanyMaterial;
 import com.pad.response.R;
+import com.pad.service.ApprovalRecordService;
 import com.pad.service.CompanyMaterialService;
 import com.pad.service.WebSocket;
 import io.swagger.annotations.Api;
@@ -12,6 +14,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -31,6 +34,10 @@ public class CompanyMaterialController {
 
     @Autowired
     private WebSocket webSocket;
+
+    @Autowired
+    private ApprovalRecordService approvalRecordService;
+
     //修改
     @ApiOperation("材料修改状态")
     @PutMapping("/update")
@@ -55,13 +62,31 @@ public class CompanyMaterialController {
 
 
     @ApiOperation("根据编号修改认证状态")
-    @PutMapping("/modify/{cNo}")
+    @PutMapping("/modify")
     public R modifyStatus(
             @ApiParam(name = "cNo",value = "要查询的企业用户编号",required = true)
-            @PathVariable String cNo
+            String cNo,
+            @ApiParam(name = "id",value = "贷款编号",required = true)
+            String id,
+            @ApiParam(name = "status",value = "审核状态",required = true)
+            Integer status,
+            @ApiParam(name = "message",value = "审核说明",required = true)
+            String message,
+            @ApiParam(name = "character",value = "审核人",required = true)
+            Integer type
     ){
         //修改认证状态
         service.deleteCompanyMaterialByIds(cNo);
+
+        //添加审批记录
+        ApprovalRecord approvalRecord = new ApprovalRecord();
+        approvalRecord.setLId(id);
+        approvalRecord.setStatus(status);
+        approvalRecord.setType(type);
+        if (StringUtils.hasText(message)){
+            approvalRecord.setMessage(message);
+        }
+        approvalRecordService.save(approvalRecord);
         webSocket.sendMessage("材料已驳回");
         return R.ok().message("驳回成功");
     }

@@ -100,5 +100,4 @@ public class CompanyDetail implements Serializable {
     @ApiModelProperty(value = "注册区")
     private String areaName;
 
-
 }

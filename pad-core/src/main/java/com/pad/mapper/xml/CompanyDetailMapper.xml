@@ -11,14 +11,15 @@
         </foreach>
     </update>
     <select id="selectByFK" resultType="com.pad.entity.CompanyDetail">
-        select d.*,i.name,i.create_time,i.auth_status,p.address_name as provinceName,
-               c.address_name as cityName,
-               a.address_name as areaName
+       select d.*,i.name,i.create_time,i.auth_status,
+        p.address_name as provinceName,
+        c.address_name as cityName,
+        a.address_name as areaName
         from company_detail d
-                 left join company_info i  on d.c_no=i.c_no
-                 left join address p on p.address_areaId=d.province
-                 left join address c on c.address_areaId=d.city
-                 left join address a on a.address_areaId=d.area
+        left join company_info i  on d.c_no=i.c_no
+        left join address p on p.address_areaId=d.province
+        left join address c on c.address_areaId=d.city
+        left join address a on a.address_areaId=d.area
         where i.c_no=#{cNo,jdbcType=VARCHAR}
         and d.is_deleted=1
     </select>

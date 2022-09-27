@@ -36,11 +36,12 @@
 
     <!--按贷款编号查询每个贷款信息-->
     <select id="findById" parameterType="String" resultType="loanInfo">
-        select l.*,c.`name`,b.bank_name
+        select l.*,c.`name`,c.phone,i.value,b.bank_name
         from loan_info l
                  left join company_info c on c.c_no=l.c_no
+                 left join `integral` i on i.c_no=l.c_no
                  left join bank b on b.bank_no=l.bank_no
-        where l.c_no=#{id}
+        where l.id=#{id}
     </select>
 
 </mapper>
