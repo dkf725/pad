@@ -54,7 +54,7 @@ public class LoanInfo implements Serializable {
     private Integer purpose;
 
     @ApiModelProperty(value = "借款期限")
-    private Date period;
+    private Integer period;
 
     @ApiModelProperty(value = "还款方式 1等额本息，2等额本金，3每月还息，4一次性还")
     private Integer returnMethod;

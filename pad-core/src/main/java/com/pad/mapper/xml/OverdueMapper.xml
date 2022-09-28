@@ -2,4 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pad.mapper.OverdueMapper">
 
+    <select id="pageQuery" resultType="overdue">
+        select o.*,p.l_id
+        from overdue o
+        left join periodization p on p.l_id=o.r_id
+    </select>
 </mapper>

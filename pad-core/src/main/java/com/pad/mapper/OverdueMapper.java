@@ -1,5 +1,7 @@
 package com.pad.mapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.pad.entity.LoanInfo;
 import com.pad.entity.Overdue;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
@@ -13,4 +15,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface OverdueMapper extends BaseMapper<Overdue> {
 
+    //逾期信息表分页显示
+    IPage<Overdue> pageQuery(IPage<Overdue> page, Overdue overdue);
 }

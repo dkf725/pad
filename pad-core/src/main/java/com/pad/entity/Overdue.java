@@ -49,5 +49,4 @@ public class Overdue implements Serializable {
     @ApiModelProperty(value = "逾期结束时间")
     private Date endTime;
 
-
 }

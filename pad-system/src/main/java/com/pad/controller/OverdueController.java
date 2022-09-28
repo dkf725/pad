@@ -31,7 +31,7 @@ public class OverdueController {
     @Autowired
     private OverdueService overdueService;
 
-    //@PreAuthorize("@me.hasAuthority('overdue:info:list')")
+    @PreAuthorize("@me.hasAuthority('overdue:info:list')")
     @ApiOperation("逾期信息表分页显示")
     @PostMapping("/list/{current}/{limit}")
     public R overdueListPage(
@@ -50,6 +50,20 @@ public class OverdueController {
         List<Overdue> overdueList = page.getRecords();
         long total = page.getTotal();
         return R.ok().data("total",total).data("overdueList",overdueList);
+    }
+
+    @PreAuthorize("@me.hasAuthority('overdue:info:update')")
+    @ApiOperation("逾期表，还款，更新时间")
+    @PutMapping("/updateTime")
+    public R updateTime(
+            @ApiParam(name = "overdue",value = "要查询的逾期用户",required = true)
+            @RequestBody Overdue overdue
+    ){
+        //修改逾期表的还款时间
+        Overdue overdueInfo = new Overdue();
+        overdue.setEndTime(overdueInfo.getEndTime());
+        overdueService.updateById(overdue);
+        return R.ok().message("还款成功");
     }
 }
 
