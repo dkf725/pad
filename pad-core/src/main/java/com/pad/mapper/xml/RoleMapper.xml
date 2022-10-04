@@ -11,13 +11,13 @@
         </foreach>
     </update>
 
-    <!--查询角色对应权限id列表-->
+    <!--查询角色对应权限id列表  只显示子菜单p.pid!=0-->
     <select id="selectMenuIdsByRoleId" resultType="java.lang.Integer">
         select p.id
         from role_permission rp
         left join role r on r.id=rp.role_id
         left join permission p on p.id=rp.permission_id
-        where r.id=#{id}
+        where r.id=#{id} and p.pid!=0
         and p.`status`=1
     </select>
 </mapper>

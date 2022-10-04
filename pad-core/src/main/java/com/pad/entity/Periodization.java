@@ -34,13 +34,13 @@ public class Periodization implements Serializable {
     @ApiModelProperty(value = "贷款信息编号")
     private String lId;
 
-    @ApiModelProperty(value = "本金（借多少）")
+    @ApiModelProperty(value = "本金（借多少）月供本金")
     private String capital;
 
-    @ApiModelProperty(value = "利息")
+    @ApiModelProperty(value = "利息 月供利息")
     private String interest;
 
-    @ApiModelProperty(value = "本息")
+    @ApiModelProperty(value = "本息 月供")
     private String ci;
 
     @ApiModelProperty(value = "还款金额")

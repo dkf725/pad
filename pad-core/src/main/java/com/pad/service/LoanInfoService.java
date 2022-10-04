@@ -17,7 +17,7 @@ import java.util.List;
 public interface LoanInfoService extends IService<LoanInfo> {
 
     //贷款信息表分页显示
-    void pageQuery(Page<LoanInfo> Page, LoanInfo LoanInfo);
+    void pageQuery(Page<LoanInfo> page, LoanInfo LoanInfo);
 
     //逻辑删除用户
     void deleteLoanInfoByIds(List<String> ids);
