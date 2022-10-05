@@ -62,7 +62,7 @@ public class CompanyMaterialController {
 
 
     @ApiOperation("根据编号修改认证状态")
-    @PutMapping("/modify")
+    @GetMapping("/modify")
     public R modifyStatus(
             @ApiParam(name = "cNo",value = "要查询的企业用户编号",required = true)
             String cNo,
@@ -76,6 +76,7 @@ public class CompanyMaterialController {
             Integer type
     ){
         //修改认证状态
+        System.out.println(cNo);
         service.deleteCompanyMaterialByIds(cNo);
 
         //添加审批记录

@@ -41,21 +41,21 @@ public class MessageController {
     @ApiOperation("留言列表分页显示")
     @PostMapping("/list/{current}/{limit}")
     public R messageListPage(
-            @ApiParam(name = "current",value = "当前页",required = true)
+            @ApiParam(name = "current", value = "当前页", required = true)
             @PathVariable long current,
-            @ApiParam(name = "limit",value = "每页记录数",required = true)
+            @ApiParam(name = "limit", value = "每页记录数", required = true)
             @PathVariable long limit,
-            @ApiParam(name = "Message",value = "查询条件",required = false)
+            @ApiParam(name = "Message", value = "查询条件", required = false)
             @RequestBody(required = false) Message message
-    ){
+    ) {
         //创建page对象
         Page<Message> messagePage = new Page<>(current, limit);
         //查询条件封装在service中
-        messageService.pageQuery(messagePage,message);
+        messageService.pageQuery(messagePage, message);
         //获取分页后的列表和总记录数
         List<Message> messageList = messagePage.getRecords();
         long total = messagePage.getTotal();
-        return R.ok().data("total",total).data("messageList",messageList);
+        return R.ok().data("total", total).data("messageList", messageList);
     }
 
 
@@ -63,9 +63,9 @@ public class MessageController {
     @ApiOperation("根据id删除留言")
     @DeleteMapping("/{id}")
     public R removeMessage(
-            @ApiParam(name = "id",value = "要删除的留言id",required = true)
+            @ApiParam(name = "id", value = "要删除的留言id", required = true)
             @PathVariable String[] id
-    ){
+    ) {
         //根据银行id删除留言
         messageService.deleteByIds(Arrays.asList(id));
         return R.ok().message("删除成功");
@@ -75,17 +75,18 @@ public class MessageController {
     @ApiOperation("回复留言")
     @PutMapping("/update")
     public R updateMessage(
-            @ApiParam(name = "message",value = "回复的留言",required = true)
+            @ApiParam(name = "message", value = "回复的留言", required = true)
             @RequestBody Message message
-    ){
+    ) {
         int i = messageService.updateMe(message);
         //发送websocket消息
         webSocket.sendMessage("收到新的回复");
-        if (i>0){
+        if (i > 0) {
             return R.ok().message("回复成功");
-        } else
+        } else {
             return R.error().message("回复失败");
-    }
+        }
 
+    }
 }
 

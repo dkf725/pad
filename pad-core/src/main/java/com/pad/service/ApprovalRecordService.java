@@ -1,5 +1,6 @@
 package com.pad.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.pad.entity.ApprovalRecord;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2022-09-02
  */
 public interface ApprovalRecordService extends IService<ApprovalRecord> {
+
+    //审核记录分页显示
+    void pageQuery(Page<ApprovalRecord> Page, ApprovalRecord approvalRecord);
 
 }

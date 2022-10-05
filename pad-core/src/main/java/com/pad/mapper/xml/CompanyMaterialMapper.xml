@@ -12,7 +12,6 @@
 
     <update id="deleteCompanyMaterialByIds" parameterType="string">
         update `company_material`
-        set is_deleted=0,
         set status=-1
         where c_no=#{cNo}
     </update>
