@@ -42,12 +42,10 @@ public class BankServiceImpl extends ServiceImpl<BankMapper, Bank> implements Ba
         //判断单个条件是否为空
         //银行名
         String bankName = bank.getBankName();
-        //状态
-        Integer isDeleted = bank.getIsDeleted();
         if (StringUtils.hasText(bankName)){
             wrapper.like(Bank::getBankName,bankName);
         }
-            wrapper.eq(Bank::getIsDeleted,1);
+        wrapper.eq(Bank::getIsDeleted,1);
         //查询
         baseMapper.selectPage(bankPage,wrapper);
     }

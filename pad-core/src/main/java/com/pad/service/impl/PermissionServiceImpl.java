@@ -63,6 +63,9 @@ public class PermissionServiceImpl extends ServiceImpl<PermissionMapper, Permiss
         List<Permission> permissionList = baseMapper.selectList(wrapper);
         //获得子菜单
         List<Permission> childList = getChild(permission.getId(), permissionList);
+        if (childList==null){
+            return;
+        }
         for (Permission child : childList) {
             child.setStatus(status);
             //修改子菜单

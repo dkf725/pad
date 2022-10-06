@@ -29,6 +29,8 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public void queryPage(Page<Role> rolePage, Role role) {
         //构造条件
         LambdaQueryWrapper<Role> wrapper = new LambdaQueryWrapper<>();
+        //不显示被删除的角色
+        wrapper.eq(Role::getIsDeleted,1);
         //判断条件是否为空
         if (ObjectUtils.isEmpty(role)){
             //条件为空 直接分页查询
@@ -38,15 +40,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         //判断单个条件是否为空
         String name = role.getName();
         String value = role.getValue();
-        Integer isDeleted = role.getIsDeleted();
+        Integer status = role.getStatus();
         if (StringUtils.hasText(name)){
             wrapper.like(Role::getName,name);
         }
         if (StringUtils.hasText(value)){
             wrapper.like(Role::getValue,value);
         }
-        if (isDeleted !=null){
-            wrapper.eq(Role::getIsDeleted,isDeleted);
+        if (status !=null){
+            wrapper.eq(Role::getStatus,status);
         }
         //查询
         baseMapper.selectPage(rolePage,wrapper);

@@ -155,7 +155,7 @@ public class CompanyInfoController {
         companyInfo.setCNo(cNo);
         companyInfo.setAuthStatus(authStatus);
         companyInfoService.updateById(companyInfo);
-        webSocket.sendMessage("您的身份认证完毕");
+        webSocket.sendMessage("您的身份认证审核完毕");
         return R.ok().message("修改认证状态成功");
     }
 
