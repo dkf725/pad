@@ -76,7 +76,6 @@ public class CompanyMaterialController {
             Integer type
     ){
         //修改认证状态
-        System.out.println(cNo);
         service.deleteCompanyMaterialByIds(cNo);
 
         //添加审批记录
@@ -88,7 +87,7 @@ public class CompanyMaterialController {
             approvalRecord.setMessage(message);
         }
         approvalRecordService.save(approvalRecord);
-        webSocket.sendMessage("材料已驳回");
+        webSocket.sendMessage("贷款审核有了新的进度");
         return R.ok().message("驳回成功");
     }
 

@@ -49,6 +49,9 @@ public class CreditController {
     @Autowired
     private PeriodizationService periodizationService;
 
+    @Autowired
+    private WebSocket webSocket;
+
 
     @PreAuthorize("@me.hasAuthority('credit:info:list')")
     @ApiOperation("放款信息表分页显示")
@@ -130,6 +133,7 @@ public class CreditController {
         profit.setCId(credit.getId());
         profit.setValue(credit.getService());
         profitService.save(profit);
+        webSocket.sendMessage("已放款");
         return R.ok().message("放款成功");
     }
 

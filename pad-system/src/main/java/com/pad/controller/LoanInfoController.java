@@ -11,6 +11,7 @@ import com.pad.response.R;
 import com.pad.service.ApprovalRecordService;
 import com.pad.service.LoanInfoService;
 import com.pad.entity.LoanInfo;
+import com.pad.service.WebSocket;
 import com.pad.utils.MD5;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -40,6 +41,9 @@ public class LoanInfoController {
 
     @Autowired
     private ApprovalRecordService approvalRecordService;
+
+    @Autowired
+    private WebSocket webSocket;
 
     @PreAuthorize("@me.hasAuthority('company:loanInfo:list')")
     @ApiOperation("贷款信息表分页显示")
@@ -108,6 +112,7 @@ public class LoanInfoController {
             approvalRecord.setMessage(message);
         }
         approvalRecordService.save(approvalRecord);
+        webSocket.sendMessage("贷款审核有了新的进度");
         return R.ok().message("修改成功");
     }
 
