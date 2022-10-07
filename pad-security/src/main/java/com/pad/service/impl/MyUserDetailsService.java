@@ -35,7 +35,7 @@ public class MyUserDetailsService implements UserDetailsService {
         wrapper.eq(Admin::getIsDeleted,1);
         Admin admin = adminMapper.selectOne(wrapper);
         if (ObjectUtils.isEmpty(admin)){
-            throw new PadException(HttpStatus.UNAUTHORIZED.value(),"用户名或密码错误");
+            throw new PadException(HttpStatus.UNAUTHORIZED.value(),"该用户已被停用，请联系管理员");
         }
         //查询用户角色
         List<String> roleList = adminMapper.selectRoleNameByUserId(admin.getId());
