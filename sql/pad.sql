@@ -3,15 +3,15 @@
 
  Source Server         : localhost_3306
  Source Server Type    : MySQL
- Source Server Version : 50719
+ Source Server Version : 80026
  Source Host           : localhost:3306
  Source Schema         : pad
 
  Target Server Type    : MySQL
- Target Server Version : 50719
+ Target Server Version : 80026
  File Encoding         : 65001
 
- Date: 26/09/2022 15:31:16
+ Date: 07/10/2022 10:25:39
 */
 
 SET NAMES utf8mb4;
@@ -28,7 +28,7 @@ CREATE TABLE `address`  (
   PRIMARY KEY (`address_areaId`) USING BTREE,
   INDEX `address_regionId`(`address_regionId`) USING BTREE,
   CONSTRAINT `address_ibfk_1` FOREIGN KEY (`address_regionId`) REFERENCES `address` (`address_areaId`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '地址表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '地址表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of address
@@ -3792,35 +3792,38 @@ CREATE TABLE `admin`  (
   `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '手机号',
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
   `email` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '邮箱',
-  `is_deleted` int(11) NOT NULL DEFAULT 1 COMMENT '0已删除，1未删除',
-  `status` int(11) NOT NULL COMMENT '0已停用，1未停用',
+  `is_deleted` int NOT NULL DEFAULT 1 COMMENT '0已删除，1未删除',
+  `status` int NOT NULL COMMENT '0已停用，1未停用',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '管理员信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin
 -- ----------------------------
 INSERT INTO `admin` VALUES ('1', 'admin', '110', '$2a$10$bAmAajbN1YLWhD7NHqEhg.KjIFjV2rnmbkG.fX674O6YVrJ4wPUoW', 'ee', 1, 1);
 INSERT INTO `admin` VALUES ('1566711476608647170', 'test1', '18070100188', '$2a$10$evbC4TByHy5qqJCJk0AhLuY6btJw6dcEAZ.PWl7tmXEJqBBRHbBtq', 'test@gmail.com', 0, 1);
+INSERT INTO `admin` VALUES ('1575035745767890945', 'lili', '18809098000', '$2a$10$WN5dDqWvHfjyp3I7vov47ubCriHmzSKHqAE3vFfxplYOMnemLsSG.', '3153116875@qq.com', 1, 1);
+INSERT INTO `admin` VALUES ('1578001081664385025', '刘亦菲', '18070109188', '$2a$10$L2fzM9FxwIEeM5KIpJw0iOzmh8E2FnYvsfhhk1UZWLl69HOrBGO.u', 'meme@jns.com', 0, 1);
 
 -- ----------------------------
 -- Table structure for admin_role
 -- ----------------------------
 DROP TABLE IF EXISTS `admin_role`;
 CREATE TABLE `admin_role`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `role_id` int(11) NOT NULL DEFAULT 0 COMMENT '角色id',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `role_id` int NOT NULL DEFAULT 0 COMMENT '角色id',
   `admin_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0' COMMENT '用户id',
-  `is_deleted` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除0已删除，1未删除\r\n',
+  `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除0已删除，1未删除\r\n',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_role_id`(`role_id`) USING BTREE,
   INDEX `idx_user_id`(`admin_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户对应角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '用户对应角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of admin_role
 -- ----------------------------
 INSERT INTO `admin_role` VALUES (1, 1, '1', 1);
+INSERT INTO `admin_role` VALUES (8, 2, '1575035745767890945', 1);
 
 -- ----------------------------
 -- Table structure for approval_record
@@ -3829,16 +3832,76 @@ DROP TABLE IF EXISTS `approval_record`;
 CREATE TABLE `approval_record`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '审批记录编号',
   `l_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '贷款信息编号',
-  `character` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '审核人物（银行或平台）',
-  `status` int(11) NULL DEFAULT 0 COMMENT '审批状态 0未审核，1审核通过，-1审核失败',
+  `type` int NULL DEFAULT NULL COMMENT '审核人物（1银行,0平台）',
+  `status` int NULL DEFAULT 0 COMMENT '状态 0未审核，1平台审核通过，2银行审核通过，3平台材料审核，4银行材料审核-1审核失败',
   `message` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '审批说明    通过不通过都写原因',
-  `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '创建时间',
+  `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '审批记录表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '审批记录表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of approval_record
 -- ----------------------------
+INSERT INTO `approval_record` VALUES ('1574325420588376065', '2', 0, 1, NULL, '2022-09-26 17:10:04');
+INSERT INTO `approval_record` VALUES ('1574325888576233474', '2', 0, -1, '不行', '2022-09-26 17:11:56');
+INSERT INTO `approval_record` VALUES ('1574326161491206145', '6', 0, 1, NULL, '2022-09-26 17:13:01');
+INSERT INTO `approval_record` VALUES ('1574326193334362113', '6', 0, -1, '不行', '2022-09-26 17:13:09');
+INSERT INTO `approval_record` VALUES ('1574571839949688833', '5', 0, -1, '太丑', '2022-09-27 09:29:15');
+INSERT INTO `approval_record` VALUES ('1575040764776914946', '1574580905455493122', 0, 1, NULL, '2022-09-28 16:32:36');
+INSERT INTO `approval_record` VALUES ('1575048822475300865', '7', 0, 1, NULL, '2022-09-28 17:04:37');
+INSERT INTO `approval_record` VALUES ('1575302255262396417', '8', 0, 3, NULL, '2022-09-29 09:51:40');
+INSERT INTO `approval_record` VALUES ('1575311010058301441', '8', 0, 1, NULL, '2022-09-29 10:26:27');
+INSERT INTO `approval_record` VALUES ('1575311012746850306', '8', 0, 1, NULL, '2022-09-29 10:26:28');
+INSERT INTO `approval_record` VALUES ('1575314634331222018', '8', 1, 4, NULL, '2022-09-29 10:40:51');
+INSERT INTO `approval_record` VALUES ('1575314827227262977', '8', 1, 1, NULL, '2022-09-29 10:41:37');
+INSERT INTO `approval_record` VALUES ('1575315111898869761', '8', 1, 1, NULL, '2022-09-29 10:42:45');
+INSERT INTO `approval_record` VALUES ('1575315132446765057', '8', 1, 2, NULL, '2022-09-29 10:42:50');
+INSERT INTO `approval_record` VALUES ('1575668090048942081', '7', 1, 4, NULL, '2022-09-30 10:05:22');
+INSERT INTO `approval_record` VALUES ('1575668303308328961', '7', 1, 2, NULL, '2022-09-30 10:06:13');
+INSERT INTO `approval_record` VALUES ('1575770556916666370', '5', 0, 3, NULL, '2022-09-30 16:52:32');
+INSERT INTO `approval_record` VALUES ('1575770580161499138', '5', 0, 1, NULL, '2022-09-30 16:52:37');
+INSERT INTO `approval_record` VALUES ('1575770657655459841', '5', 1, 4, NULL, '2022-09-30 16:52:56');
+INSERT INTO `approval_record` VALUES ('1575770680556359681', '5', 1, 2, NULL, '2022-09-30 16:53:01');
+INSERT INTO `approval_record` VALUES ('1575770717273296897', '5', 1, 5, NULL, '2022-09-30 16:53:10');
+INSERT INTO `approval_record` VALUES ('1575770738479697922', '5', 1, 5, NULL, '2022-09-30 16:53:15');
+INSERT INTO `approval_record` VALUES ('1575770751138107393', '1574580905455493122', 1, -1, 'no', '2022-09-30 16:53:18');
+INSERT INTO `approval_record` VALUES ('1577203669370667010', '1577203348196159490', 0, 3, NULL, '2022-10-04 15:47:12');
+INSERT INTO `approval_record` VALUES ('1577203711934464002', '1577203348196159490', 0, 1, NULL, '2022-10-04 15:47:23');
+INSERT INTO `approval_record` VALUES ('1577203798802694146', '1577203348196159490', 1, 4, NULL, '2022-10-04 15:47:43');
+INSERT INTO `approval_record` VALUES ('1577203829177843714', '1577203348196159490', 1, 2, NULL, '2022-10-04 15:47:51');
+INSERT INTO `approval_record` VALUES ('1577212669491515393', '1577203348196159490', 1, 5, NULL, '2022-10-04 16:22:58');
+INSERT INTO `approval_record` VALUES ('1577214568794001409', '1577214283749126146', 0, -1, '积分不足', '2022-10-04 16:30:31');
+INSERT INTO `approval_record` VALUES ('1577216855394324481', '1577214283749126146', 0, 3, NULL, '2022-10-04 16:39:36');
+INSERT INTO `approval_record` VALUES ('1577221333145141249', '1577214283749126146', 0, -1, '身份证不符合', '2022-10-04 16:57:24');
+INSERT INTO `approval_record` VALUES ('1577221333694595073', '1577214283749126146', 0, -1, '身份证不符合', '2022-10-04 16:57:24');
+INSERT INTO `approval_record` VALUES ('1577223425968619522', '1577214283749126146', 0, -1, '信用报告不正确', '2022-10-04 17:05:43');
+INSERT INTO `approval_record` VALUES ('1577223427105275905', '1577214283749126146', 0, -1, '信用报告不正确', '2022-10-04 17:05:43');
+INSERT INTO `approval_record` VALUES ('1577223583359877121', '1577214283749126146', 0, 3, NULL, '2022-10-04 17:06:20');
+INSERT INTO `approval_record` VALUES ('1577223601995169794', '1577214283749126146', 0, 1, NULL, '2022-10-04 17:06:25');
+INSERT INTO `approval_record` VALUES ('1577223734912663554', '1577214283749126146', 1, -1, '企业电话不正确', '2022-10-04 17:06:56');
+INSERT INTO `approval_record` VALUES ('1577224071857881089', '1577214283749126146', 0, 3, NULL, '2022-10-04 17:08:17');
+INSERT INTO `approval_record` VALUES ('1577225404992241665', '1577214283749126146', 0, -1, '电话错误', '2022-10-04 17:13:35');
+INSERT INTO `approval_record` VALUES ('1577225406116315138', '1577214283749126146', 0, -1, '电话错误', '2022-10-04 17:13:35');
+INSERT INTO `approval_record` VALUES ('1577225430887874562', '1577214283749126146', 0, 3, NULL, '2022-10-04 17:13:41');
+INSERT INTO `approval_record` VALUES ('1577225449145679874', '1577214283749126146', 0, 1, NULL, '2022-10-04 17:13:45');
+INSERT INTO `approval_record` VALUES ('1577225533774151681', '1577214283749126146', 1, -1, '账户错误', '2022-10-04 17:14:05');
+INSERT INTO `approval_record` VALUES ('1577225534885642242', '1577214283749126146', 1, -1, '账户错误', '2022-10-04 17:14:06');
+INSERT INTO `approval_record` VALUES ('1577225595434614786', '1577214283749126146', 0, 3, NULL, '2022-10-04 17:14:20');
+INSERT INTO `approval_record` VALUES ('1577225611842732033', '1577214283749126146', 0, 1, NULL, '2022-10-04 17:14:24');
+INSERT INTO `approval_record` VALUES ('1577225647645310978', '1577214283749126146', 1, 4, NULL, '2022-10-04 17:14:33');
+INSERT INTO `approval_record` VALUES ('1577225675659067394', '1577214283749126146', 1, 2, NULL, '2022-10-04 17:14:39');
+INSERT INTO `approval_record` VALUES ('1577225706021634049', '1577214283749126146', 1, 5, NULL, '2022-10-04 17:14:46');
+INSERT INTO `approval_record` VALUES ('1577229688303566849', '3', 0, 3, NULL, '2022-10-04 17:30:36');
+INSERT INTO `approval_record` VALUES ('1577229704933982209', '3', 0, 1, NULL, '2022-10-04 17:30:40');
+INSERT INTO `approval_record` VALUES ('1577229750849028098', '3', 1, 4, NULL, '2022-10-04 17:30:51');
+INSERT INTO `approval_record` VALUES ('1577229768427356161', '3', 1, 2, NULL, '2022-10-04 17:30:55');
+INSERT INTO `approval_record` VALUES ('1577229818352156674', '3', 1, 5, NULL, '2022-10-04 17:31:07');
+INSERT INTO `approval_record` VALUES ('1577233003691163649', '6', 0, 3, NULL, '2022-10-04 17:43:46');
+INSERT INTO `approval_record` VALUES ('1577233024683655169', '6', 0, 1, NULL, '2022-10-04 17:43:51');
+INSERT INTO `approval_record` VALUES ('1577233227385978881', '6', 1, 4, NULL, '2022-10-04 17:44:40');
+INSERT INTO `approval_record` VALUES ('1577233243441774594', '6', 1, 2, NULL, '2022-10-04 17:44:43');
+INSERT INTO `approval_record` VALUES ('1577233297825120257', '6', 1, 5, NULL, '2022-10-04 17:44:56');
+INSERT INTO `approval_record` VALUES ('1577474508536209409', '6', 1, 5, NULL, '2022-10-05 09:43:26');
 
 -- ----------------------------
 -- Table structure for bank
@@ -3855,21 +3918,22 @@ CREATE TABLE `bank`  (
   `city` char(11) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册市    外键',
   `area` char(11) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册区    外键',
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '银行详细地址',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除   默认是1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除   默认是1未删除',
   PRIMARY KEY (`bank_no`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '合作银行表bank' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '合作银行表bank' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of bank
 -- ----------------------------
 INSERT INTO `bank` VALUES ('1', '中国银行', 1.75, 0.50, '作为2010年上海世博会全球合作伙伴，交通银行特别推出“展业通”系列小企业专项信贷与结算金融服务产品。流程简便快捷，三日内完成审批流程，额度500万以内更可\n直接进入“绿色通道”。中国银行龙岗支行作为龙岗地区首\nuA\n批小企业金融信贷服务中心，已成功为家具行业、眼镜行业、钟表行业、珠宝行业、商品批发业等龙岗区传统优势产业及新兴产业办理融资服务。\n', '\r\n95566', '120000', '120100', '120113', '小淀镇街道', 1);
+INSERT INTO `bank` VALUES ('1578010132670390273', '海南银行', 1.20, 1.90, '海南', '13970112799', '140000', '140300', '140302', '夏威夷', 0);
 INSERT INTO `bank` VALUES ('2', '渤海银行', 1.46, 1.50, '“小巨人\"中小企业最佳融资方案——全面满足处于创业、成长、成熟期等各阶段企业的融资需求，包含\"创融通\"、“及时予\"、“信贷保\"、“助业桥\"四大系列49种融资产品，内含六类特色产品', '95588', '120000', '120100', '120111', '李七庄街道', 1);
 INSERT INTO `bank` VALUES ('3', '华夏银行', 1.89, 2.80, '“短贷通1.0\"是中行特别为往来三年以上的对公\"老\"客户推出的信用贷款产品。\n只要在中行连\n续对公结算三年以上，2009年全年在中行累计销售回款在1200万元以上，公司就有机会在中行获得最高300万元人民币的信用贷款额度。\n', '95533', '120000', '120100', '120110', '南大街250号街道', 1);
 INSERT INTO `bank` VALUES ('4', '农业银行', 0.78, 3.90, '工行全球现金管理业务:在国内同业中率先推出现金管理服务，通过其具有自主知识产权的全球现金管理服务系统，充分满足跨国企业统一调配境内外资金，统筹管理全球账户的需求，将工行在境内的业务优势和先进服务经验延伸到境外，通过遍布全球的分支机构和代理行网络，与境外银行建立合作，为跨国企业提供\"一站式\"现金管理。', '95599', '120000', '120100', '120102', '上杭路街道', 1);
-INSERT INTO `bank` VALUES ('5', '中国银行', 1.57, 2.58, '“好融通\"是中国银行专为中小企业量身打造的标准化融资解决方案。在客户准入标准、审批流程上均进行了全面创新，具有更客观、更高效、更灵活、更贴近中小企业的特点。\n', '95555', '120000', '120100', '120103', '柳林街道', 1);
+INSERT INTO `bank` VALUES ('5', '工商银行', 1.57, 2.58, '“好融通\"是中国银行专为中小企业量身打造的标准化融资解决方案。在客户准入标准、审批流程上均进行了全面创新，具有更客观、更高效、更灵活、更贴近中小企业的特点。\n', '95555', '120000', '120100', '120103', '柳林街道', 1);
 INSERT INTO `bank` VALUES ('6', '北京银行', 3.41, 4.31, '跨行即时转账（跨行快汇）是我行现金管理系统为企业提供的一项特色收付款服务产品，通过产品企业可享受7*24小时小额跨行即时转账，资金实时到达收款帐户的特色服务。\n', '95530', '110000', '110100', '110108', '海淀街道', 1);
-INSERT INTO `bank` VALUES ('7', '华夏银行', 2.67, 2.56, '企业通过现金管理系统跨行即时转账功能，完成每月突发性、数量多、金额小的跨行转账业务，且该业务可实现7*24小时随时办理、转账资金实时到账，减少资金在途时间，降低营运成本，有效提升企业财务处理效率和资金使用效率。\n', '95512', '120000', '120100', '120110', '张贵庄街', 1);
-INSERT INTO `bank` VALUES ('8', '渤海银行', 2.68, 1.68, '小微网贷,由农业银行与税务部门数据共享，在微信公众号或企业网银等渠道在线自助申请，自动评级、授信、审批、提款，额度内随借随还、自助可循环的信贷业务。', '95509', '120000', '120100', '120103', '陈塘庄街', 1);
+INSERT INTO `bank` VALUES ('7', '九江银行', 2.67, 2.56, '企业通过现金管理系统跨行即时转账功能，完成每月突发性、数量多、金额小的跨行转账业务，且该业务可实现7*24小时随时办理、转账资金实时到账，减少资金在途时间，降低营运成本，有效提升企业财务处理效率和资金使用效率。\n', '95512', '120000', '120100', '120110', '张贵庄街', 1);
+INSERT INTO `bank` VALUES ('8', '建设银行', 2.68, 1.68, '小微网贷,由农业银行与税务部门数据共享，在微信公众号或企业网银等渠道在线自助申请，自动评级、授信、审批、提款，额度内随借随还、自助可循环的信贷业务。', '95509', '120000', '120100', '120103', '陈塘庄街', 1);
 
 -- ----------------------------
 -- Table structure for company_detail
@@ -3878,24 +3942,32 @@ DROP TABLE IF EXISTS `company_detail`;
 CREATE TABLE `company_detail`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '详情编号',
   `c_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业编号',
-  `type` int(11) NULL DEFAULT NULL COMMENT '企业类型 0个人独资，1合伙企业，2有限责任公司',
+  `type` int NULL DEFAULT NULL COMMENT '企业类型 0个人独资，1合伙企业，2有限责任公司',
   `legal_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '法人姓名',
   `legal_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '法人证件号',
   `province` char(6) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册省',
   `city` char(6) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册市',
   `area` char(6) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '注册区',
-  `credit` int(11) NULL DEFAULT NULL COMMENT '企业信誉度',
+  `credit` int NULL DEFAULT NULL COMMENT '企业信誉度',
   `address` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '公司详情地址',
   `license` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '营业执照图片',
   `lic_time` date NULL DEFAULT NULL COMMENT '营业执照到期时间',
   `scope` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '经营范围',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户详细信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户详细信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of company_detail
 -- ----------------------------
+INSERT INTO `company_detail` VALUES ('1574580512403070977', 'Q12313942241', 1, '胡萝卜', '533123198508252640', '210000', '210400', '210404', 200, '夏威夷', 'bf4c8fd3-4272-4f6a-9e69-46a508bcd6e9.jpg', '2023-07-19', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577203213001158658', 'Q12331240941', 1, '毒苹果', '533123198508252640', '150000', '150300', '150303', 200, '大树下', '1f621ee0-ec4f-465f-ba58-39b0c80bb969.jfif', '2022-12-23', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577228170129174530', 'Q12334242181', 2, 'fukka', '533123198508252640', '230000', '230100', '230103', 200, '夏威夷', '366e2616-b611-43cc-9968-bc70acb63cda.jpg', '2023-03-12', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577232731447357349', 'Q12373465246', 2, '胡萝卜卜', '533123198508252640', '110000', '110100', '110108', 200, '夏威夷', '64d362fd-6d7d-4e3f-8bb7-37640017b630.jpg', '2023-01-10', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577232731447357441', 'Q12354112341', 2, '胡萝卜卜', '533123198508252640', '110000', '110100', '110108', 200, '夏威夷', '64d362fd-6d7d-4e3f-8bb7-37640017b630.jpg', '2023-01-10', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577232731447357449', 'Q12324673655', 2, '胡萝卜卜', '533123198508252640', '110000', '110100', '110108', 200, '夏威夷', '64d362fd-6d7d-4e3f-8bb7-37640017b630.jpg', '2023-01-10', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577232732447357349', 'Q222222222', 2, '胡萝卜卜', '533123198508252640', '110000', '110100', '110108', 200, '夏威夷', '64d362fd-6d7d-4e3f-8bb7-37640017b630.jpg', '2023-01-10', '药品加工', 1);
+INSERT INTO `company_detail` VALUES ('1577232732447367349', 'Q12352352522', 2, '胡萝卜卜', '533123198508252640', '110000', '110100', '110108', 200, '夏威夷', '64d362fd-6d7d-4e3f-8bb7-37640017b630.jpg', '2023-01-10', '药品加工', 1);
 
 -- ----------------------------
 -- Table structure for company_info
@@ -3908,22 +3980,23 @@ CREATE TABLE `company_info`  (
   `phone` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业电话',
   `password` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '密码',
   `create_time` date NULL DEFAULT NULL COMMENT '创建时间',
-  `auth_status` int(11) NULL DEFAULT 0 COMMENT '认证状态   0未认证，1认证中，2认证通过，-1认证失败     默认是0未认证',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除     默认是1未删除',
+  `auth_status` int NULL DEFAULT 0 COMMENT '认证状态   0未认证，1认证中，2认证通过，-1认证失败     默认是0未认证',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除     默认是1未删除',
   PRIMARY KEY (`c_no`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户基本信息表company_info' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户基本信息表company_info' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of company_info
 -- ----------------------------
-INSERT INTO `company_info` VALUES ('Q12313942241', '哇唧唧哇', '6730123124@qq.com', '14290123562', '96e79218965eb72c92a549dd5a330112', '2022-02-01', 2, 0);
-INSERT INTO `company_info` VALUES ('Q12324673655', '满庭芳', '1803013124@qq.com', '18790125262', '670b14728ad9902aecba32e22fa4f6bd', '2022-01-21', 2, 1);
-INSERT INTO `company_info` VALUES ('Q12331240941', '九州', '1304212124@qq.com', '13890123562', '525', '2022-03-02', 0, 1);
-INSERT INTO `company_info` VALUES ('Q12334242181', '云间来客', '1243123124@qq.com', '12690123562', '5432', '2022-04-14', -1, 1);
-INSERT INTO `company_info` VALUES ('Q12352352522', '宇宙第一', '9030123124@qq.com', '13790633562', '1', '2022-05-19', 0, 1);
-INSERT INTO `company_info` VALUES ('Q12354112341', '先锋者', '1630123124@qq.com', '18690123562', '111', '2022-07-07', -1, 1);
-INSERT INTO `company_info` VALUES ('Q12373465246', '杰尼斯', '1630197124@qq.com', '15590122362', '$2a$10$JxkAocd0grVk8D338x.phuXQytTAEwM3bVs9yeFZwYn7vK6VoXuIa', '2022-11-16', 0, 1);
-INSERT INTO `company_info` VALUES ('Q12389655448', '超级无敌', '1090123124@qq.com', '18990533562', '11', '2022-09-02', 2, 1);
+INSERT INTO `company_info` VALUES ('Q12313942241', '哇唧唧哇', '6730123124@qq.com', '14290123562', '96e79218965eb72c92a549dd5a330112', '2022-02-01', 1, 0);
+INSERT INTO `company_info` VALUES ('Q12324673655', '满庭芳', '1803013124@qq.com', '18790125262', '96e79218965eb72c92a549dd5a330112', '2022-01-21', 2, 1);
+INSERT INTO `company_info` VALUES ('Q12331240941', '九州', '1304212124@qq.com', '13890123562', '96e79218965eb72c92a549dd5a330112', '2022-03-02', 1, 1);
+INSERT INTO `company_info` VALUES ('Q12334242181', '云间来客', '1243123124@qq.com', '12690123562', '96e79218965eb72c92a549dd5a330112', '2022-04-14', 2, 1);
+INSERT INTO `company_info` VALUES ('Q12352352522', '宇宙第一', '9030123124@qq.com', '13790633562', '1', '2022-05-19', 1, 1);
+INSERT INTO `company_info` VALUES ('Q12354112341', '先锋者', '1630123124@qq.com', '18690123562', '96e79218965eb72c92a549dd5a330112', '2022-07-07', 1, 1);
+INSERT INTO `company_info` VALUES ('Q12373465246', '杰尼斯', '1630197124@qq.com', '15590122362', '$2a$10$JxkAocd0grVk8D338x.phuXQytTAEwM3bVs9yeFZwYn7vK6VoXuIa', '2022-11-16', 1, 1);
+INSERT INTO `company_info` VALUES ('Q12389655448', '超级无敌', '1090123124@qq.com', '18990533562', '11', '2022-10-22', 2, 1);
+INSERT INTO `company_info` VALUES ('Q222222222', '植护', 'zhihu@qq.com', '13970110199', '96e79218965eb72c92a549dd5a330112', '2022-10-05', 1, 1);
 
 -- ----------------------------
 -- Table structure for company_material
@@ -3942,42 +4015,47 @@ CREATE TABLE `company_material`  (
   `collateral` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '抵押物',
   `collateral_photo` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '抵押物图片',
   `records` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '纳税记录',
-  `status` int(11) NULL DEFAULT 0 COMMENT '状态 0未审核，1审核通过',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除 0删除1未删除',
+  `status` int NULL DEFAULT 0 COMMENT '状态 0未审核，1平台审核通过，2银行审核通过，-1审核失败',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除 0删除1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户材料信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '企业用户材料信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of company_material
 -- ----------------------------
-INSERT INTO `company_material` VALUES ('1', '1', '12233', '赵明路', '1111', '', NULL, NULL, NULL, '房产', NULL, NULL, 0, 1);
+INSERT INTO `company_material` VALUES ('1', 'Q12373465246', '12233', '赵明路', '1111', 'cc996fe0-ea1f-4a36-b74c-f2af826b32dc.jpg', 'c87bacb9-9cda-4263-8130-1ed80259a808.jpg', 200, 'fe93dd9a-ffc8-4ef9-bac3-28e3214187a4.jpg', '房产', '39f94719-47c5-47e3-bb0c-1380a2d8ed51.jfif', 'ec556608-c600-4ada-bd7e-ac0b98d71098.jpg', 2, 1);
+INSERT INTO `company_material` VALUES ('1574582253701931009', 'Q12313942241', '17544372154', '胡萝卜卜', '533123198508252640', 'cc996fe0-ea1f-4a36-b74c-f2af826b32dc.jpg', 'ec271641-c2c0-4865-8942-7554e72f8935.jpg', 110, 'b3f17d9e-5284-408a-9619-6fc3d75a5d90.jpg', '机动车', 'b64fd003-71cb-444c-8f48-7dafcd5156a2.jfif', '16452eab-48d4-4584-be37-8b5223b51425.jpg', 2, 1);
+INSERT INTO `company_material` VALUES ('1577203560679600130', 'Q12331240941', '784432', '大老鼠', '533123198508252640', 'f0716f7c-415a-40be-83f2-c3b86e093920.jpg', 'c87bacb9-9cda-4263-8130-1ed80259a808.jpg', 200, '83d50e84-72a4-4079-a746-ee1877ce12ba.jpg', '机动车', '36d0749b-b1ee-4949-9c6d-c0d1dfdb7ea8.jfif', 'c4f74a2e-6bea-4655-9068-2313aa9846db.jpg', 2, 1);
+INSERT INTO `company_material` VALUES ('1577214435645845505', 'Q12324673655', '784432', '大老鼠', '533123198508252640', 'a47ee8ee-cc87-4535-affd-cf5663e5ca02.jpg', 'd41dc1cb-1245-4662-b583-ab79dd86bccf.jpg', 200, 'e93ac617-b570-4ec6-a7cd-cf404ccf1bec.jpg', '机动车', '24bbce34-183b-4fb7-a9d4-bc40368656bc.jfif', 'bb7a0bcd-31b3-430e-ac36-24e87cf7f813.jpg', 2, 1);
+INSERT INTO `company_material` VALUES ('1577229635765792770', 'Q12334242181', '784432', '大老鼠', '533123198508252640', '6c83bab4-e752-41ad-8b1f-ca393f76378d.jpg', 'c737948a-1dab-48cf-8f84-6890fca24c59.jpg', 200, 'decd4995-a9ad-4711-8429-e8af75fd8894.jpg', '机动车', 'cdef747c-d14f-4c79-aa92-7594d47af994.jfif', 'df982205-158b-4552-91ff-c046f0c8b80e.jpg', 2, 1);
+INSERT INTO `company_material` VALUES ('1577232930169286658', 'Q12354112341', '784432', '大老鼠', '533123198508252640', 'b76579d7-3581-455c-8738-1ffa3d191130.jpg', 'c50ee271-dbc9-47fe-9708-54a480ec0f94.jpg', 200, 'fe93dd9a-ffc8-4ef9-bac3-28e3214187a4.jpg', '机动车', '39f94719-47c5-47e3-bb0c-1380a2d8ed51.jfif', 'ec556608-c600-4ada-bd7e-ac0b98d71098.jpg', 2, 1);
 
 -- ----------------------------
 -- Table structure for credit
 -- ----------------------------
 DROP TABLE IF EXISTS `credit`;
 CREATE TABLE `credit`  (
-  `id` varchar(255) CHARACTER SET swe7 COLLATE swe7_swedish_ci NOT NULL COMMENT '放款编号',
+  `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '放款编号',
   `l_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '贷款信息编号',
-  `type` int(11) NULL DEFAULT NULL COMMENT '放款类型 0现金，1汇款',
-  `money` double(255, 3) NULL DEFAULT NULL COMMENT '实际放款金额',
-  `service` double(255, 3) NULL DEFAULT NULL COMMENT '平台所收手续费',
+  `type` int NULL DEFAULT NULL COMMENT '放款类型 0现金，1汇款',
+  `money` double(255, 0) NULL DEFAULT NULL COMMENT '实际放款金额',
+  `service` double(255, 0) NULL DEFAULT NULL COMMENT '平台所收手续费',
   `create_time` date NULL DEFAULT NULL COMMENT '创建时间',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '放款表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '放款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of credit
 -- ----------------------------
-INSERT INTO `credit` VALUES ('1', '24512412', 0, 10000.210, 80.000, '2022-09-06', 1);
-INSERT INTO `credit` VALUES ('2', '31423415', 1, 4000.234, 43.000, '2022-08-30', 1);
-INSERT INTO `credit` VALUES ('3', '31423418', 0, 36900.430, 1000.000, '2022-08-29', 1);
-INSERT INTO `credit` VALUES ('4', '31563415', 1, 24000.560, 360.540, '2022-08-29', 1);
-INSERT INTO `credit` VALUES ('5', '31563415', 0, 4600.870, 326.670, '2022-08-29', 1);
-INSERT INTO `credit` VALUES ('6', '32423410', 1, 89000.860, 877.680, '2022-09-06', 1);
-INSERT INTO `credit` VALUES ('7', '33423419', 0, 228988.750, 636.670, '2022-09-06', 1);
-INSERT INTO `credit` VALUES ('8', '39423410', 1, 67997.660, 567.780, '2022-08-29', 1);
+INSERT INTO `credit` VALUES ('1575674594860818434', '7', 0, 33000, 333, '2022-09-30', 1);
+INSERT INTO `credit` VALUES ('1575770716073725954', '5', 0, 51480, 520, '2022-09-30', 1);
+INSERT INTO `credit` VALUES ('1575770736890056705', '5', 0, 51480, 520, '2022-09-30', 1);
+INSERT INTO `credit` VALUES ('1575770749506523137', '5', 0, 51480, 520, '2022-09-30', 1);
+INSERT INTO `credit` VALUES ('1577212669000781826', '1577203348196159490', 0, 495000, 5000, '2022-10-04', 1);
+INSERT INTO `credit` VALUES ('1577225704910143490', '1577214283749126146', 0, 2970000, 30000, '2022-10-04', 1);
+INSERT INTO `credit` VALUES ('1577229817236471809', '3', 0, 54450, 550, '2022-10-04', 1);
+INSERT INTO `credit` VALUES ('1577474508045475842', '6', 0, 11000, 111, '2022-10-05', 1);
 
 -- ----------------------------
 -- Table structure for integral
@@ -3986,14 +4064,23 @@ DROP TABLE IF EXISTS `integral`;
 CREATE TABLE `integral`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '积分编号',
   `c_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业编号',
-  `value` int(11) NULL DEFAULT NULL COMMENT '积分数值',
+  `value` int NULL DEFAULT NULL COMMENT '积分数值',
   `create_time` date NULL DEFAULT NULL COMMENT '获得时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '积分表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '积分表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of integral
 -- ----------------------------
+INSERT INTO `integral` VALUES ('1', 'Q12313942241', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('2', 'Q12324673655', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('3', 'Q12331240941', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('4', 'Q12334242181', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('5', 'Q12352352522', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('6', 'Q12354112341', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('7', 'Q12373465246', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('8', 'Q12389655448', 5, '2022-09-26');
+INSERT INTO `integral` VALUES ('9', 'Q222222222', 5, '2022-09-26');
 
 -- ----------------------------
 -- Table structure for loan_info
@@ -4006,27 +4093,30 @@ CREATE TABLE `loan_info`  (
   `bank_number` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '收款账户',
   `bank_type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '开户行',
   `amount` double(50, 0) NULL DEFAULT NULL COMMENT '贷款金额',
-  `purpose` int(50) NULL DEFAULT NULL COMMENT '贷款用途 1个人消费贷款 2经营贷款 3按揭贷款',
-  `period` date NULL DEFAULT NULL COMMENT '借款期限',
-  `return_method` int(11) NULL DEFAULT NULL COMMENT '还款方式 1等额本息，2等额本金，3每月还息，4一次性还',
-  `status` int(11) NULL DEFAULT 0 COMMENT '状态 0未审核，1审核通过，-1审核失败',
+  `purpose` int NULL DEFAULT NULL COMMENT '贷款用途 1个人消费贷款 2经营贷款 3按揭贷款',
+  `period` int NULL DEFAULT NULL COMMENT '借款期限（月（1-360））',
+  `return_method` int NULL DEFAULT NULL COMMENT '还款方式 1等额本息，2等额本金，3每月还息，4一次性还',
+  `status` int NULL DEFAULT 0 COMMENT '状态 0未审核，1平台审核通过，2银行审核通过，3平台材料审核，4银行材料审核，-1审核失败 ，5已放款',
   `create_time` date NULL DEFAULT NULL COMMENT '创建时间',
   `update_time` date NULL DEFAULT NULL COMMENT '更新时间',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '贷款信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '贷款信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of loan_info
 -- ----------------------------
-INSERT INTO `loan_info` VALUES ('24512412', 'Q12313942241', '1', '6222023602034647198\n', '中国银行天津市分行北辰支行', 80000, 1, '2022-09-06', 2, 1, '2022-08-30', '2022-09-14', 0);
-INSERT INTO `loan_info` VALUES ('31423415', 'Q12324673655', '2', '6222600710014694287\n', '渤海银行北京市分行海淀支行', 100000, 2, '2022-09-06', 1, 0, '2022-08-29', '2022-09-14', 1);
-INSERT INTO `loan_info` VALUES ('31423418', 'Q12331240941', '3', '6216611900009484112\n', '华夏银行天津市分行西青支行', 55000, 3, '2022-09-05', 2, -1, '2022-09-14', '2022-09-14', 1);
-INSERT INTO `loan_info` VALUES ('31423987', 'Q12334242181', '4', '6226190302942515142\n', '农业银行天津市分行静海支行', 8900, 1, '1970-01-01', 4, -1, '2022-09-14', '2022-09-14', 1);
-INSERT INTO `loan_info` VALUES ('31563415', 'Q12352352522', '5', '6952023602034647198', '中国银行天津市分行东丽支行', 52000, 2, '1970-01-01', 3, 1, '2022-09-14', '2022-09-14', 1);
-INSERT INTO `loan_info` VALUES ('32423410', 'Q12354112341', '6', '6217003810026896707\n', '北京银行北京市分行海淀支行', 11111, 3, '2022-08-30', 2, 0, '2022-09-06', '2022-09-27', 1);
-INSERT INTO `loan_info` VALUES ('33423419', 'Q12373465246', '7', '6217003810023896707', '华夏银行天津市分行红桥支行', 33333, 1, '2022-08-30', 1, 0, '2022-09-05', '2022-09-15', 1);
-INSERT INTO `loan_info` VALUES ('39423410', 'Q12389655448', '8', '6217003810023896709', '渤海银行天津市分行河东支行', 22222, 3, '2022-09-05', 3, 0, '2022-09-06', '2022-09-02', 1);
+INSERT INTO `loan_info` VALUES ('1', 'Q12313942241', '1', '6222023602034647198\n', '中国银行天津市分行北辰支行', 80000, 1, 2, 2, 2, '2022-08-30', '2022-09-14', 0);
+INSERT INTO `loan_info` VALUES ('1574580905455493122', 'Q12313942241', '1', '6222624167138891252', '渤海银行北京市分行海淀支行', 500000, 1, 5, 1, 5, '2022-09-26', '2022-10-02', 1);
+INSERT INTO `loan_info` VALUES ('1577203348196159490', 'Q12331240941', '6', '6222624167138891252', '渤海银行北京市分行海淀支行', 500000, 2, 5, 1, 5, '2022-10-04', '2022-10-04', 1);
+INSERT INTO `loan_info` VALUES ('1577214283749126146', 'Q12324673655', '4', '6222624167138891252', '渤海银行北京市分行海淀支行', 3000000, 2, 4, 2, 5, '2022-10-02', '2022-10-04', 1);
+INSERT INTO `loan_info` VALUES ('2', 'Q12313942241', '2', '6222600710014694287\n', '渤海银行北京市分行海淀支行', 100000, 2, 5, 1, 2, '2022-08-29', '2022-09-26', 0);
+INSERT INTO `loan_info` VALUES ('3', 'Q12334242181', '3', '6216611900009484112', '华夏银行天津市分行西青支行', 55000, 3, 6, 1, 5, '2022-09-13', '2022-10-04', 1);
+INSERT INTO `loan_info` VALUES ('4', 'Q12334242181', '4', '6226190302942515142\n', '农业银行天津市分行静海支行', 8900, 1, 4, 4, -1, '2022-09-14', '2022-09-14', 0);
+INSERT INTO `loan_info` VALUES ('5', 'Q12352352522', '5', '6952023602034647198', '中国银行天津市分行东丽支行', 52000, 2, 3, 3, 5, '2022-09-14', '2022-09-30', 1);
+INSERT INTO `loan_info` VALUES ('6', 'Q12354112341', '6', '6217003810026896707', '北京银行北京市分行海淀支行', 11111, 3, 4, 2, 5, '2022-09-05', '2022-10-05', 1);
+INSERT INTO `loan_info` VALUES ('7', 'Q12373465246', '7', '6217003810023896707', '华夏银行天津市分行红桥支行', 33333, 1, 4, 1, 2, '2022-09-05', '2022-09-30', 1);
+INSERT INTO `loan_info` VALUES ('8', 'Q12389655448', '8', '6217003810023896709', '渤海银行天津市分行河东支行', 22222, 3, 3, 3, 2, '2022-09-06', '2022-09-29', 1);
 
 -- ----------------------------
 -- Table structure for message
@@ -4035,20 +4125,21 @@ DROP TABLE IF EXISTS `message`;
 CREATE TABLE `message`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '留言编号',
   `c_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业编号',
-  `create_time` date NULL DEFAULT NULL COMMENT '留言时间',
+  `create_time` datetime NULL DEFAULT NULL COMMENT '留言时间',
   `context` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '留言内容',
-  `update_time` date NULL DEFAULT NULL COMMENT '回复时间',
+  `update_time` datetime NULL DEFAULT NULL COMMENT '回复时间',
   `reply` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '回复内容',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '留言表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '留言表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of message
 -- ----------------------------
-INSERT INTO `message` VALUES ('1', '1', '2022-09-12', '真的好', '2022-09-15', '哈哈', 1);
-INSERT INTO `message` VALUES ('2', '1', '2022-09-13', '喜欢', '2022-09-15', '别叭叭', 1);
-INSERT INTO `message` VALUES ('3', '1', '2022-08-29', '喜欢', '2022-09-15', '嘻嘻', 1);
+INSERT INTO `message` VALUES ('1', '1', '2022-09-12 00:00:00', '真的好', '2022-09-15 00:00:00', '哈哈', 1);
+INSERT INTO `message` VALUES ('1577985597132886017', 'Q12334242181', '2022-10-06 00:00:00', '？', '2022-10-06 00:00:00', NULL, 1);
+INSERT INTO `message` VALUES ('2', '1', '2022-09-13 00:00:00', '喜欢', '2022-09-15 00:00:00', '别叭叭', 1);
+INSERT INTO `message` VALUES ('3', '1', '2022-08-29 00:00:00', '喜欢', '2022-09-15 00:00:00', '嘻嘻', 1);
 
 -- ----------------------------
 -- Table structure for notice
@@ -4059,9 +4150,9 @@ CREATE TABLE `notice`  (
   `created_time` date NULL DEFAULT NULL COMMENT '创建时间',
   `message` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT '公告内容',
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '发布人',
-  `is_deleted` int(11) NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除   默认是1未删除',
+  `is_deleted` int NULL DEFAULT 1 COMMENT '逻辑删除   0已删除，1未删除   默认是1未删除',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '公告表notice' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '公告表notice' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of notice
@@ -4074,16 +4165,24 @@ DROP TABLE IF EXISTS `overdue`;
 CREATE TABLE `overdue`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '逾期编号',
   `r_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '还款编号',
-  `overdue_rate` double UNSIGNED NULL DEFAULT NULL COMMENT '逾期利率',
-  `money` double UNSIGNED NULL DEFAULT NULL COMMENT '逾期金额',
-  `begin_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '逾期开始时间',
-  `end_time` timestamp(0) NULL DEFAULT NULL COMMENT '逾期结束时间',
+  `overdue_rate` double(255, 3) UNSIGNED NULL DEFAULT NULL COMMENT '逾期利率',
+  `money` double(255, 3) UNSIGNED NULL DEFAULT NULL COMMENT '逾期金额',
+  `begin_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP COMMENT '逾期开始时间',
+  `end_time` timestamp NULL DEFAULT NULL COMMENT '逾期结束时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '逾期信息表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '逾期信息表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of overdue
 -- ----------------------------
+INSERT INTO `overdue` VALUES ('1', '24512412', 8.900, 80.300, '2022-09-27 10:40:36', '2022-09-13 10:40:34');
+INSERT INTO `overdue` VALUES ('2', '31423415', 10.230, 150.320, '2022-09-27 11:05:50', '2022-09-29 11:05:45');
+INSERT INTO `overdue` VALUES ('3', '31423418', 2.430, 10.030, '2022-09-27 11:06:16', '2022-09-06 11:06:42');
+INSERT INTO `overdue` VALUES ('4', '31423987', 5.456, 47.430, '2022-09-27 11:07:07', '2022-09-06 11:07:08');
+INSERT INTO `overdue` VALUES ('5', '31563415', 6.895, 31.345, '2022-09-27 11:07:32', '2022-08-30 11:07:29');
+INSERT INTO `overdue` VALUES ('6', '32423410', 9.345, 109.320, '2022-09-27 11:07:51', '2022-09-05 11:07:48');
+INSERT INTO `overdue` VALUES ('7', '33423419', 14.456, 267.650, '2022-09-27 11:08:07', '2022-09-05 11:08:04');
+INSERT INTO `overdue` VALUES ('8', '39423410', 6.456, 234.640, '2022-09-27 11:08:25', '2022-09-05 11:08:22');
 
 -- ----------------------------
 -- Table structure for periodization
@@ -4092,68 +4191,103 @@ DROP TABLE IF EXISTS `periodization`;
 CREATE TABLE `periodization`  (
   `id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '分期编号',
   `l_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '贷款信息编号',
-  `capital` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '本金（借多少）',
-  `interest` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '利息',
-  `c-i` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '本息',
-  `money` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '还款金额',
-  `create_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '实际还款时间',
-  `overdue` int(11) NULL DEFAULT 1 COMMENT '是否逾期 0是 1否',
+  `capital` double NULL DEFAULT NULL COMMENT '本金（借多少）月供本金',
+  `interest` double NULL DEFAULT NULL COMMENT '利息 月供利息',
+  `ci` double NULL DEFAULT NULL COMMENT '本息 月供',
+  `money` double NULL DEFAULT NULL COMMENT '还款金额',
+  `repayment_time` timestamp NULL DEFAULT NULL COMMENT '实际还款时间',
+  `overdue` int NULL DEFAULT 1 COMMENT '是否逾期 0是 1否',
   `number` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '还款卡号',
-  `status` int(11) NULL DEFAULT 0 COMMENT '还款状态  0待还款 1已还款 2逾期',
-  `originally_time` timestamp(0) NULL DEFAULT CURRENT_TIMESTAMP(0) COMMENT '原定还款时间',
-  `periods` int(11) NULL DEFAULT 0 COMMENT '期数',
+  `status` int NULL DEFAULT 0 COMMENT '还款状态  0待还款 1已还款 2逾期',
+  `originally_time` timestamp NULL DEFAULT NULL COMMENT '原定还款时间',
+  `periods` int NULL DEFAULT 0 COMMENT '期数',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '分期还款表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '分期还款表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of periodization
 -- ----------------------------
+INSERT INTO `periodization` VALUES ('1574945874982285314', '2', 19951.39, 121.67, 20073.06, NULL, NULL, 1, NULL, 0, NULL, 1);
+INSERT INTO `periodization` VALUES ('1574945875045199874', '2', 19975.67, 97.39, 20073.06, NULL, NULL, 1, NULL, 0, NULL, 2);
+INSERT INTO `periodization` VALUES ('1574945875045199875', '2', 19999.97, 73.09, 20073.06, NULL, NULL, 1, NULL, 0, NULL, 3);
+INSERT INTO `periodization` VALUES ('1574945875045199876', '2', 20024.3, 48.76, 20073.06, NULL, NULL, 1, NULL, 0, NULL, 4);
+INSERT INTO `periodization` VALUES ('1574945875045199877', '2', 20048.67, 24.39, 20073.06, NULL, NULL, 1, NULL, 0, NULL, 5);
+INSERT INTO `periodization` VALUES ('1577141629469904897', '1574580905455493122', 99708.76, 729.17, 100437.93, NULL, NULL, 1, NULL, 0, NULL, 1);
+INSERT INTO `periodization` VALUES ('1577141629469904898', '1574580905455493122', 99854.17, 583.76, 100437.93, NULL, NULL, 1, NULL, 0, NULL, 2);
+INSERT INTO `periodization` VALUES ('1577141629469904899', '1574580905455493122', 99999.79, 438.14, 100437.93, NULL, NULL, 1, NULL, 0, NULL, 3);
+INSERT INTO `periodization` VALUES ('1577141629469904900', '1574580905455493122', 100145.63, 292.3, 100437.93, NULL, NULL, 1, NULL, 0, NULL, 4);
+INSERT INTO `periodization` VALUES ('1577141629469904901', '1574580905455493122', 100291.65, 146.26, 100437.91, NULL, NULL, 1, NULL, 0, NULL, 5);
+INSERT INTO `periodization` VALUES ('1577212669101445122', '1577203348196159490', 99433.28, 1420.83, 100854.11, NULL, NULL, 1, NULL, 0, '2022-11-04 00:00:00', 1);
+INSERT INTO `periodization` VALUES ('1577212669101445123', '1577203348196159490', 99715.83, 1138.28, 100854.11, NULL, NULL, 1, NULL, 0, '2023-01-04 00:00:00', 2);
+INSERT INTO `periodization` VALUES ('1577212669101445124', '1577203348196159490', 99999.19, 854.92, 100854.11, NULL, NULL, 1, NULL, 0, '2023-04-04 00:00:00', 3);
+INSERT INTO `periodization` VALUES ('1577212669101445125', '1577203348196159490', 100283.36, 570.75, 100854.11, NULL, NULL, 1, NULL, 0, '2023-08-04 00:00:00', 4);
+INSERT INTO `periodization` VALUES ('1577212669101445126', '1577203348196159490', 100568.34, 285.78, 100854.12, NULL, NULL, 1, NULL, 0, '2024-01-04 00:00:00', 5);
+INSERT INTO `periodization` VALUES ('1577225705103081473', '1577214283749126146', 750000, 1950, 751950, NULL, NULL, 1, NULL, 0, '2022-11-04 00:00:00', 1);
+INSERT INTO `periodization` VALUES ('1577225705103081474', '1577214283749126146', 750000, 1462.5, 751462.5, NULL, NULL, 1, NULL, 0, '2023-01-04 00:00:00', 2);
+INSERT INTO `periodization` VALUES ('1577225705103081475', '1577214283749126146', 750000, 975, 750975, NULL, NULL, 1, NULL, 0, '2023-04-04 00:00:00', 3);
+INSERT INTO `periodization` VALUES ('1577225705103081476', '1577214283749126146', 750000, 487.5, 750487.5, NULL, NULL, 1, NULL, 0, '2023-08-04 00:00:00', 4);
+INSERT INTO `periodization` VALUES ('1577229817383272454', '3', 9130.64, 86.63, 9217.27, 9217.27, '2022-10-07 01:40:40', 1, NULL, 1, '2022-10-07 19:42:33', 1);
+INSERT INTO `periodization` VALUES ('1577229817383272459', '3', 9145.03, 72.24, 9217.27, 9217.27, '2022-10-06 00:00:00', 1, NULL, 1, '2022-10-06 00:00:00', 2);
+INSERT INTO `periodization` VALUES ('1577229817437798403', '3', 9159.43, 57.84, 9217.27, NULL, NULL, 1, NULL, 0, '2023-04-04 00:00:00', 3);
+INSERT INTO `periodization` VALUES ('1577229817437798404', '3', 9173.86, 43.41, 9217.27, NULL, NULL, 1, NULL, 0, '2023-08-04 00:00:00', 4);
+INSERT INTO `periodization` VALUES ('1577229817437798405', '3', 9188.3, 28.97, 9217.27, NULL, NULL, 1, NULL, 0, '2024-01-04 00:00:00', 5);
+INSERT INTO `periodization` VALUES ('1577229817437798406', '3', 9202.74, 14.49, 9217.23, NULL, NULL, 1, NULL, 0, '2024-07-04 00:00:00', 6);
+INSERT INTO `periodization` VALUES ('1577474508141944833', '6', 2777.75, 31.57, 2809.32, NULL, NULL, 1, NULL, 0, '2022-10-05 00:00:00', 1);
+INSERT INTO `periodization` VALUES ('1577474508141944834', '6', 2777.75, 23.68, 2801.43, NULL, NULL, 1, NULL, 0, '2022-12-05 00:00:00', 2);
+INSERT INTO `periodization` VALUES ('1577474508141944835', '6', 2777.75, 15.79, 2793.54, NULL, NULL, 1, NULL, 0, '2023-01-05 00:00:00', 3);
+INSERT INTO `periodization` VALUES ('1577474508209053698', '6', 2777.75, 7.89, 2785.64, NULL, NULL, 1, NULL, 0, '2023-02-05 00:00:00', 4);
 
 -- ----------------------------
 -- Table structure for permission
 -- ----------------------------
 DROP TABLE IF EXISTS `permission`;
 CREATE TABLE `permission`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
-  `pid` int(11) NOT NULL DEFAULT 0 COMMENT '所属上级',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `pid` int NOT NULL DEFAULT 0 COMMENT '所属上级',
   `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '名称',
-  `type` int(11) NOT NULL DEFAULT 0 COMMENT '类型(1:菜单,2:按钮)',
+  `type` int NOT NULL DEFAULT 0 COMMENT '类型(1:菜单,2:按钮)',
   `permission_value` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '权限值',
   `path` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '访问路径',
-  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '状态(0:禁止,1:正常)',
-  `is_deleted` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除0已删除，1未删除\r\n',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '状态(0:禁止,1:正常)',
+  `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除0已删除，1未删除\r\n',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_pid`(`pid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 245 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 247 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '权限' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of permission
 -- ----------------------------
 INSERT INTO `permission` VALUES (1, 0, '系统管理', 1, 'system', 'system', 1, 1);
 INSERT INTO `permission` VALUES (2, 0, '贷款信息管理', 1, 'company:loanInfo:list', 'loanInfo', 1, 1);
-INSERT INTO `permission` VALUES (3, 0, '企业用户基本信息管理', 1, 'company:info:list', 'companyInfo', 1, 1);
+INSERT INTO `permission` VALUES (3, 0, '企业用户管理', 1, 'company:info:list', 'companyInfo', 1, 1);
 INSERT INTO `permission` VALUES (4, 0, '银行管理', 1, 'system:bank:list', 'system/bank/list', 1, 1);
 INSERT INTO `permission` VALUES (5, 0, '留言管理', 1, 'system:message:list', 'system/message/list', 1, 1);
+INSERT INTO `permission` VALUES (6, 0, '放款管理', 1, 'credit:info:list', 'credit', 1, 1);
+INSERT INTO `permission` VALUES (7, 0, '逾期管理', 1, 'overdue:info:list', NULL, 1, 1);
 INSERT INTO `permission` VALUES (100, 1, '用户管理', 1, 'system:user:list', 'system/user/index', 1, 1);
 INSERT INTO `permission` VALUES (101, 1, '角色管理', 1, 'system:role:list', 'system/role/list', 1, 1);
 INSERT INTO `permission` VALUES (102, 1, '菜单管理', 1, 'system:menu:list', NULL, 1, 1);
-INSERT INTO `permission` VALUES (103, 2, '根据编号删除贷款表信息', 2, 'company:loanInfo:remove', NULL, 1, 1);
-INSERT INTO `permission` VALUES (104, 2, '按主键查询每个贷款信息', 2, 'company:loanInfo:query', NULL, 1, 1);
+INSERT INTO `permission` VALUES (103, 2, '根据编号删除', 2, 'company:loanInfo:remove', NULL, 1, 1);
+INSERT INTO `permission` VALUES (104, 2, '按主键查询', 2, 'company:loanInfo:query', NULL, 1, 1);
 INSERT INTO `permission` VALUES (105, 2, '修改贷款信息', 2, 'company:loanInfo:edit', NULL, 1, 1);
 INSERT INTO `permission` VALUES (106, 2, '添加贷款信息', 2, 'company:loanInfo:add', NULL, 1, 1);
-INSERT INTO `permission` VALUES (107, 3, '查询企业用户基本信息', 2, 'company:info:query', NULL, 1, 1);
-INSERT INTO `permission` VALUES (108, 3, '按主键查询每个企业用户基本信息', 2, 'company:info:query', 'companyInfo', 1, 1);
-INSERT INTO `permission` VALUES (109, 3, '企业用户基本信息表分页显示', 1, 'company:info:list', 'companyInfo', 1, 0);
-INSERT INTO `permission` VALUES (110, 3, '修改企业用户基本信息', 2, 'company:info:edit', NULL, 1, 1);
-INSERT INTO `permission` VALUES (111, 3, '删除企业用户基本信息', 2, 'company:info:remove', NULL, 1, 1);
-INSERT INTO `permission` VALUES (112, 3, '添加企业用户基本信息', 2, 'company:info:add', NULL, 1, 1);
+INSERT INTO `permission` VALUES (108, 3, '按主键查询', 2, 'company:info:query', 'companyInfo', 1, 1);
+INSERT INTO `permission` VALUES (110, 3, '修改基本信息', 2, 'company:info:edit', NULL, 1, 1);
+INSERT INTO `permission` VALUES (111, 3, '删除基本信息', 2, 'company:info:remove', NULL, 1, 1);
+INSERT INTO `permission` VALUES (112, 3, '添加基本信息', 2, 'company:info:add', NULL, 1, 1);
 INSERT INTO `permission` VALUES (113, 4, '银行查询', 2, 'system:bank:query', '', 1, 1);
 INSERT INTO `permission` VALUES (114, 4, '银行删除', 2, 'system:bank:remove', '', 1, 1);
 INSERT INTO `permission` VALUES (115, 4, '银行添加', 2, 'system:bank:add', NULL, 1, 1);
 INSERT INTO `permission` VALUES (116, 4, '银行修改', 2, 'system:bank:edit', NULL, 1, 1);
-INSERT INTO `permission` VALUES (117, 5, '留言查询', 2, 'system:message:query', '', 1, 1);
-INSERT INTO `permission` VALUES (118, 5, '留言删除', 2, 'system:message:edit', NULL, 1, 1);
-INSERT INTO `permission` VALUES (119, 5, '回复留言', 2, 'system:message:update', NULL, 1, 1);
+INSERT INTO `permission` VALUES (117, 5, '留言查询', 2, 'system:message:query', '', 0, 1);
+INSERT INTO `permission` VALUES (118, 5, '留言删除', 2, 'system:message:edit', NULL, 0, 1);
+INSERT INTO `permission` VALUES (119, 5, '回复留言', 2, 'system:message:update', NULL, 0, 1);
+INSERT INTO `permission` VALUES (120, 3, '基本信息导出', 2, 'system:menu:export', NULL, 1, 1);
+INSERT INTO `permission` VALUES (121, 2, '贷款审核', 2, 'company:loanInfo:modify', NULL, 1, 1);
+INSERT INTO `permission` VALUES (122, 6, '放款', 2, 'credit:info:add', NULL, 1, 1);
+INSERT INTO `permission` VALUES (123, 6, '放款查询', 2, 'credit:info:query', NULL, 1, 1);
+INSERT INTO `permission` VALUES (124, 3, '修改认证状态', 2, 'company:info:modify', NULL, 1, 1);
+INSERT INTO `permission` VALUES (125, 7, '逾期更新', 2, 'overdue:info:update', NULL, 1, 1);
 INSERT INTO `permission` VALUES (200, 100, '用户添加', 2, 'system:user:add', '', 1, 1);
 INSERT INTO `permission` VALUES (201, 100, '用户修改', 2, 'system:user:edit', NULL, 1, 1);
 INSERT INTO `permission` VALUES (202, 100, '用户删除', 2, 'system:user:remove', NULL, 1, 1);
@@ -4170,8 +4304,6 @@ INSERT INTO `permission` VALUES (212, 102, '菜单添加', 2, 'system:menu:add',
 INSERT INTO `permission` VALUES (213, 102, '菜单删除', 2, 'system:menu:remove', NULL, 1, 1);
 INSERT INTO `permission` VALUES (214, 102, '菜单修改', 2, 'system:menu:edit', NULL, 1, 1);
 INSERT INTO `permission` VALUES (215, 102, '查询菜单', 2, 'system:menu:query', NULL, 1, 1);
-INSERT INTO `permission` VALUES (243, 3, '用户基本信息导出', 2, 'system:menu:export', NULL, 1, 1);
-INSERT INTO `permission` VALUES (244, 0, '放款管理', 1, 'credit:info:list', 'credit', 1, 1);
 
 -- ----------------------------
 -- Table structure for persistent_logins
@@ -4181,9 +4313,9 @@ CREATE TABLE `persistent_logins`  (
   `username` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `series` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `token` varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `last_used` timestamp(0) NOT NULL DEFAULT CURRENT_TIMESTAMP(0) ON UPDATE CURRENT_TIMESTAMP(0),
+  `last_used` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`series`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of persistent_logins
@@ -4194,12 +4326,12 @@ CREATE TABLE `persistent_logins`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `profit`;
 CREATE TABLE `profit`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键',
   `c_id` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '放款编号    外键',
-  `value` int(11) NULL DEFAULT NULL COMMENT '收益金额',
+  `value` double NULL DEFAULT NULL COMMENT '收益金额',
   `create_time` date NULL DEFAULT NULL COMMENT '获得时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 15 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '平台收益表profit' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '平台收益表profit' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of profit
@@ -4218,6 +4350,13 @@ INSERT INTO `profit` VALUES (11, NULL, 7500, '2022-06-23');
 INSERT INTO `profit` VALUES (12, NULL, 13000, '2022-10-07');
 INSERT INTO `profit` VALUES (13, NULL, 8900, '2022-11-12');
 INSERT INTO `profit` VALUES (14, NULL, 5000, '2022-12-23');
+INSERT INTO `profit` VALUES (20, '1575770716073725954', 520, '2022-09-30');
+INSERT INTO `profit` VALUES (21, '1575770736890056705', 520, '2022-09-30');
+INSERT INTO `profit` VALUES (22, '1575770749506523137', 520, '2022-09-30');
+INSERT INTO `profit` VALUES (23, '1577212669000781826', 5000, '2022-10-04');
+INSERT INTO `profit` VALUES (24, '1577225704910143490', 30000, '2022-10-04');
+INSERT INTO `profit` VALUES (25, '1577229817236471809', 550, '2022-10-04');
+INSERT INTO `profit` VALUES (27, '1577474508045475842', 111.11, '2022-10-05');
 
 -- ----------------------------
 -- Table structure for recognition
@@ -4228,9 +4367,9 @@ CREATE TABLE `recognition`  (
   `c_no` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '企业编号    外键',
   `create_time` date NULL DEFAULT NULL COMMENT '创建时间',
   `img` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL COMMENT '人像',
-  `status` int(11) NULL DEFAULT 0 COMMENT '状态  0未审核，1审核通过，-1审核失败   默认是0未审核',
+  `status` int NULL DEFAULT 0 COMMENT '状态  0未审核，1审核通过，-1审核失败   默认是0未审核',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '人脸识别recognition' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '人脸识别recognition' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of recognition
@@ -4241,33 +4380,34 @@ CREATE TABLE `recognition`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '角色id',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '角色id',
   `name` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '' COMMENT '角色名称',
   `value` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL COMMENT '角色值',
-  `is_deleted` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除\r\n',
-  `status` tinyint(4) NOT NULL DEFAULT 1 COMMENT '0已停用，1未停用',
+  `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除\r\n',
+  `status` tinyint NOT NULL DEFAULT 1 COMMENT '0已停用，1未停用',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
 INSERT INTO `role` VALUES (1, '平台管理员', 'platform', 1, 1);
 INSERT INTO `role` VALUES (2, '银行管理员', 'bank', 1, 1);
+INSERT INTO `role` VALUES (3, '留言管理员', 'message', 0, 0);
 
 -- ----------------------------
 -- Table structure for role_permission
 -- ----------------------------
 DROP TABLE IF EXISTS `role_permission`;
 CREATE TABLE `role_permission`  (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '主键id',
-  `role_id` int(11) NOT NULL DEFAULT 0 COMMENT '角色id',
-  `permission_id` int(11) NOT NULL DEFAULT 0 COMMENT '权限id',
-  `is_deleted` tinyint(3) UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除\r\n',
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `role_id` int NOT NULL DEFAULT 0 COMMENT '角色id',
+  `permission_id` int NOT NULL DEFAULT 0 COMMENT '权限id',
+  `is_deleted` tinyint UNSIGNED NOT NULL DEFAULT 1 COMMENT '逻辑删除 0已删除，1未删除\r\n',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `idx_role_id`(`role_id`) USING BTREE,
   INDEX `idx_permission_id`(`permission_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 45 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色对应权限表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 78 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = '角色对应权限表' ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of role_permission
@@ -4284,9 +4424,7 @@ INSERT INTO `role_permission` VALUES (9, 1, 103, 1);
 INSERT INTO `role_permission` VALUES (10, 1, 104, 1);
 INSERT INTO `role_permission` VALUES (11, 1, 105, 1);
 INSERT INTO `role_permission` VALUES (12, 1, 106, 1);
-INSERT INTO `role_permission` VALUES (13, 1, 107, 1);
 INSERT INTO `role_permission` VALUES (14, 1, 108, 1);
-INSERT INTO `role_permission` VALUES (15, 1, 109, 1);
 INSERT INTO `role_permission` VALUES (16, 1, 110, 1);
 INSERT INTO `role_permission` VALUES (17, 1, 111, 1);
 INSERT INTO `role_permission` VALUES (18, 1, 112, 1);
@@ -4313,7 +4451,50 @@ INSERT INTO `role_permission` VALUES (39, 1, 212, 1);
 INSERT INTO `role_permission` VALUES (40, 1, 213, 1);
 INSERT INTO `role_permission` VALUES (41, 1, 214, 1);
 INSERT INTO `role_permission` VALUES (42, 1, 215, 1);
-INSERT INTO `role_permission` VALUES (43, 1, 243, 1);
-INSERT INTO `role_permission` VALUES (44, 1, 244, 1);
+INSERT INTO `role_permission` VALUES (51, 1, 6, 1);
+INSERT INTO `role_permission` VALUES (52, 1, 120, 1);
+INSERT INTO `role_permission` VALUES (53, 1, 121, 1);
+INSERT INTO `role_permission` VALUES (54, 1, 122, 1);
+INSERT INTO `role_permission` VALUES (61, 1, 123, 1);
+INSERT INTO `role_permission` VALUES (71, 2, 2, 1);
+INSERT INTO `role_permission` VALUES (72, 2, 104, 1);
+INSERT INTO `role_permission` VALUES (73, 2, 105, 1);
+INSERT INTO `role_permission` VALUES (74, 2, 121, 1);
+INSERT INTO `role_permission` VALUES (75, 2, 6, 1);
+INSERT INTO `role_permission` VALUES (76, 2, 122, 1);
+INSERT INTO `role_permission` VALUES (77, 2, 123, 1);
+INSERT INTO `role_permission` VALUES (85, 1, 124, 1);
+INSERT INTO `role_permission` VALUES (86, 1, 7, 1);
+INSERT INTO `role_permission` VALUES (87, 1, 125, 1);
+
+-- ----------------------------
+-- Table structure for user_face_info
+-- ----------------------------
+DROP TABLE IF EXISTS `user_face_info`;
+CREATE TABLE `user_face_info`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `c_no` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '企业ID',
+  `group_id` int NULL DEFAULT NULL COMMENT '分组id',
+  `face_id` varchar(31) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '人脸唯一Id',
+  `name` varchar(63) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '名字',
+  `age` int NULL DEFAULT NULL COMMENT '年纪',
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '邮箱地址',
+  `gender` smallint NULL DEFAULT NULL COMMENT '性别，1=男，2=女',
+  `phone_number` varchar(11) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '电话号码',
+  `face_feature` blob NULL COMMENT '人脸特征',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+  `fpath` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '照片路径',
+  `status` int NULL DEFAULT NULL COMMENT '状态',
+  PRIMARY KEY (`id`) USING BTREE,
+  INDEX `GROUP_ID`(`group_id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Records of user_face_info
+-- ----------------------------
+INSERT INTO `user_face_info` VALUES (1, NULL, 101, 'dq55cuoatx', 'tom', NULL, NULL, NULL, NULL, 0x0080FA440000A041E76F0CBDBB87203C842C2ABC56C59E3CC173253CCDB293BCAA9D7FBDD996E2BDF2CAB1BDF7C2153CE72D9E3D0BBDAC3CC941CA3C2BB3DC3C4A1087BCACFCED3D4BE07CBDBA2BDCBC6C34E93D57247FBAB70F08BD5BDF053D196AD8BD96CB473C06F3C83D81C71C3DA0D2AABA2ABC6D3DAA0E93BDB4A15EBDB943E2BD265A323D979C8C3D502D58BD0E9F90BCF2DD94BD17EECB3D7638553D609C29BC721F93BD5E2F1EBDA90AB8BC4C80C43D62FFE53D2B14CE3C2FB341BD0E39DE3D5118413D847E09BE6F6BA5BD01C4983B0C15F4BCA631BA3C2807133D6626D03D3E3646BDAC0616BD19E579BDB626E53C65691DBCEF8A763DBE6E073DAC6BD93D084F0DBDA15EC73D3F1F56BDCA8634BD97311FBDA0BD1DBC060A25BEA5BC33BE007B9A3C7105023EC908273C96841CBDF5B72ABCF24C6C3B92FD193C18A7113D20D67CBD6C2D133CABDDC7BCF17C19BDF90EB23DF43CD83CDFCF0F3EB96CDABD7B35BE3D1CD4403DC6CA0FBD71D3D43DEC77B43D39ACA93CF3B20E3D92AC8C3C5BC6843D0416B7BA73A3133DD0F51EBBC7A8BDBA2C90863D10D6983CD4E8BE3D81AE23BE26E6723D5B6883BCAE99ABBDB26CAA3C54161A3DA5D376BD993C5E3C4C928C3C8FBCE83DC91B063D19E5A03DCA279E3D97FB943D9B61323D858C4B3C2A4A123EA4CFBBBC2EB2D43D19911ABE56CE53BDA040EFBD875F3C3D8CC258BD3EDB0ABBAC56493DA77F31BCA5F314BE5E04343DBA7742BD1A96ADBC654A4F3D41D874BC5E2C21BE7AEA98BD269AA5BABAC0593D50CCA33C4ACDFB3C73C9053D97F25C3D2C282BBD2E5ABB3CEEF0A5BD5E938A3C5CB4643D90AE143D9A78AC3D9F390B3CA5C2123D90609BBDE98B55BD4F57823DEFDCF4BCBA7EB83BF053D8BD3294F43BBC072ABCB61F1D3C4AE5443C12E9C33B739792BD9F9B33BCE56BC6BD5908FE3C72C4DC3DBBE4CBBD1E7746BDEF55483D304A953DB9DD103DCE9D4CBDF0C239BC9D480E3D7588173E2213C23CA02D3EBA59A69A3DA969543D57452FBD42A3CFBC0FA27A3D771A92BD441779BC6745B93C16C00BBD090918BDFC4C8ABDEA0731BD673E6EBCF5BEC5BDCF7384BDABF2083BCE09A83D9BB00F3B26C812BC7034093D5E2476BC9CBB02BD6F231A3D9F7A283E599CE0BC2EE4C8BC67C83F3D550FA53D52016BBD3E2C693DAB769ABDBE963E3CF1E9183DEF6500BDC5BF323D17C6B0BB369387BDE1B083BD2620C0BD4F12743DD968F53D827DB3BCC9EA8ABD84EAA2BC0ED694BD6BCED53D94DCA23DC9E453BDB1DA5D3DD1840DBE711053BD6A149B3AF3858ABD6CDBD9BC4C363D3D9DEA013DC908C4BC06BCB5BCC4D7AF3D659AA33D39F90A3D71E7CFBD81CA36BCE44294BCE2E0843D5A09D0BDF50DF3BCFC208DBCB7697EBE469E063E51C48FBD264EB23D25C53ABCF2FB523DD87D073E646A0D3C, '2022-09-12 20:09:16', '2022-09-12 20:09:16', NULL, NULL);
+INSERT INTO `user_face_info` VALUES (2, NULL, 101, '1pehfqjduv', 'tatsuya', NULL, NULL, NULL, NULL, 0x0080FA440000A04136B5963D1C9B893D4F9DDABDCED9693DF1BC093E63B3DFBC5DF9D1BCB29BF53DEF1F143DDCFDE7BB6C32273C09BC403DC61F563D82EEC43B29F2323D2439E5BDD7B73FBDAC9E78BC19F1AA3B9E5288BD220D9ABDD41402BE64987A3DEB476BBCA92480BC667123BDA0837C3D074D16BD56BD0B3D246BE03D1F1837BDB7ECB2BD337751BDF206AC3DA6B592BC7EDAA4BB04F759BC29AD913DA80855BD941B863D53D0A03C5CB34A3D0BD4B63D89ABE83CCBE6AFBDF45462BCB41157BB8438743D3DF5973D696D423D7B7C033D8921E4BDBAD991BD8B5354BCDC28963DD4E31D3D70ACEBBD65421DBD3826B2BD9BA7513DFB6939BDCE6452BD244CCCBCEBB99EBB0B2411BE1C3E4DBDAC1588BCBF45C6BD0C80633DC42046BD1EAA77BCB57B393D66E1063D147F38BC5FDD423DF9B0413D818F143D35941DBDE0E582BDCA638EBD9C87FE3A17907ABDCE37B3BBB01B17BE0438083C4C02E2BCB364253ECA4C82BB954601BE611A393D6D34203DAC6E1C3C8CAF94BD530159BDE44D72BD980CC2BD057F7D3D74D019BD651A963D85E9F4BC5165143D2FE8233D4ED9E4BCC60B133DD97C83BD271B063C72638A3D4197DFBDA6CE3CBC3C92623D093F98BC32FC173ECA24173D90847FBD5806953CD22812BC08F7D9BC9E91443D759F6ABDB7BB2DBDBF3C20BD4C4C0ABDCCC572BCE1938EBDA4C6BB3C7921903CCC8BB3BBFFBED2BC168A27BD5201B8BD7F6F1D3D5E48463D66A5493DC27336BD94A09B3D751D8B3DC1A9573C03A61FBDD75EE73DF4F5083DA93F28BD28C3C1BD59BC13BEE4D69ABCFA6521BE65031DBD47F9A33C9B257E3DD6C1063D0FF64C3DF80DC3BD8DD5183E3FEBB03D19F4A5BD38E3D03D90B3843DBE3575BD3E96543CEE82B63C595CDCBCC2B21E3D4537713D636851BD6C5EC13DC2874A3D4E3209BD010444BDE4A67EBCFFB118BD9C6915BD74C886BD877EF93BDAF7D9BC316D80BD6356263CFCFB493CA4D03A3E5C5A4E3D310E10BEC458B6BD366A20BE7B83DA3D4382023DAAB8C73DDD6A803D2942A7BD90ADD23C29C1783D06F605BDC0A3A33D205B793C9FEC003D4FF75C3D13B13A3C9C3250BD35BFB83C8ECAFF3BBBF0123D1B87F53DE59574BDDF3694BDFE731DBD24751EBE73FF09BE12FA9D3DFA57823D9AFC853D10E0213CF26400BD8F2ECEBC02201F3AB213753D99964CBD7D3ABBBD21AE4BBDD1D931BC506D073D64DDF73BAB22B6BCEC18223D441B6CBDBC092F3DE450A3BDEC540FBD14018E3BE02AFB3C88250E3DD54AC23C9461C6BC7C55ABBDE7B12BBD97AF0E3D6473A5BD29F30ABDA38805BDAB1785BCC8C7A3BDC6B78A3D5D04063EAB4ED73C33A09D3DF4FCF9BBFC5E7EBB0CB1323AC69EB3BD3A3BB1BDCBB986BCA8BE59BDCCEDAABC5989F4BCFFBF19BD303A4CBD3D2BA6BD5C92AC3D2558573BE7710C3C, '2022-09-12 22:39:12', '2022-09-12 22:39:12', NULL, NULL);
+INSERT INTO `user_face_info` VALUES (3, 'Q222222222', 101, '2xtiu38n8i', '云间来客', NULL, NULL, NULL, NULL, 0x0080FA440000A04112FE4B3D696E773D2EF77CBD3E5A4B3C5189F23DC00F98BCA30E9BBD3CB6043E1015833D39E6C23DEE3203BD8E4D98BCA4CDED3DCF43F93C8E7D3E3DB9679EBCE0215B3B1697023D7435683D7A9650BD9DE3C1BDF390D7BDB08B243D849F9FBBD4C2533D06A53DBD4041533C83930C3DA5ED9FBCCC528F3D23556ABD78C1D2BD0CF7C5BD94643B3D365CA1BC92305ABCEE51C43CA50126BCA89518BC9988863DA206A1BB952C083E027B933D55EA813C7318BFBD8765B93CC2B4043D11F1C23D781C1D3D738C1C3D099D13BC86974EBDDAC901BDAEEA6ABD25FA6B3D2A531A3C12DBC2BD88EF1C3CA2B5FABA1872453DE853603BC51CAFBDD8AE443BE80BDABB28599EBD566179BDAB72A2BDC26541BD7B9A94BC2747BABCA79F043D3C5393BD1274733D0D4D4ABC6F4C0CBC66A98DBC5026823DFAD031BD0EDC3DBEF589453DCA8B45BBBC30D2BDF350A3BC246A13BEC727B6BDCD6A8BBD4500A63DB04BB6BD26EBA9BDBE078CBC7B16683C7CF940BDDE6F12BE542161BC7174FABD3F7830BDA89171BCD3B191BCD7DCFA3DC6F3E3BBDF3B363D56580F3CABB30D3D14C15C3CB8AD11BE4C1943BCBA9B8D3DF09833BE6D0E093C29AAF73C7C7121BC3D548E3D2D66C83CECAB9FBD2DA7B23DB1372D3D656193BC3771093D42EBDBBD5B0E66BD917A5BBD835D03BDEA0DA1BD43A1A63C817EC1BC6F95003D767603BD9D528EBD630716BD70115ABBC13B8B3D71FABB3D66FBA13A77717EBC2B6B923B61091D3D3BC3043CE68AD0BB5BBBF73D2E39293B0E9B49BC608286BDB29419BE8D11F73C3234CABDAF3565BDB501CD3B5C60B33DFCAFCB3D18ED863D3A2628BD0591B43D06D5953D7B90ACBD6F15563D3CD2DF3D1759C4BD54D218BD2CD9883DBD015EBC181A1FBDF7A0943DD3A73FBDB503F13DEC4B243D610BF33C6D0258BD410E743DBC28C9BC15C391BD61A290BC6162893CE7606EBD42971EBCE4D2EE3A8CC1413D152CF83DD82E663DECE957BE2711EBBC319369BDB272A23DB6A28A3D5F09DF3D8077D33DA18E73BD315DDB3B2CF7D73DC3ED21BC664DBF3D9DA10DBD5683843DC769BFBC1F5B8B3D373086BDC298C2BC0FE7473DD88E123DFFF4833DAB047ABC55427CBD74DF743DDBA0D7BD8FB6C2BD25B5263BDB12D9BC36E5C23CA3433E3D454436BDD30B1DBD90286B3D1F2FA93DDDE216BC016740BD1EA321BE361F283D9EC48A3DD664753D094B16BE959DE03C85F933BDE526223DBBE213BE87A6E0BCA364B4BDE191153D603E863DD22391BC69A157BC30FC383B96DE0CBD516D843D21E48DBD7A08933B3EA1BE3B6C5DD8BB48FF82BD0C169D3D169CDE3D7E839B3B8292DE3DF7FD063DD2E0EE3BEB69293DD9D8CABDDDCB21BC3E4931BC96A4DFBCC888B6BCA04562BDED577CBD9E9C83BC26612FBE8DE0BD3DE0066ABC843ACE3B, '2022-10-05 16:12:38', '2022-10-07 10:23:01', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;

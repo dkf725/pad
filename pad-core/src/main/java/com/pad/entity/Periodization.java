@@ -65,5 +65,10 @@ public class Periodization implements Serializable {
     @ApiModelProperty(value = "期数")
     private Integer periods;
 
+    @ApiModelProperty(value = "逾期金额")
+    private Double overdueMoney;
 
+    @TableField(exist = false)
+    @ApiModelProperty(value = "逾期利率")
+    private Double overdueRate;
 }

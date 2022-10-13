@@ -44,7 +44,7 @@ public class Overdue implements Serializable {
 
     @ApiModelProperty(value = "逾期开始时间")
     @TableField(fill = FieldFill.INSERT)
-    private Date beginTime;
+    private Date createTime;
 
     @ApiModelProperty(value = "逾期结束时间")
     private Date endTime;

@@ -2,4 +2,10 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.pad.mapper.PeriodizationMapper">
 
+    <select id="selectOverdueList" resultType="com.pad.entity.Periodization">
+        SELECT p.*,b.overdue_rate FROM `periodization` p
+        left join loan_info l on l.id = p.l_id
+        left join bank b on b.bank_no = l.bank_no
+        where p.`status`=0
+    </select>
 </mapper>
